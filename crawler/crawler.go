@@ -1,7 +1,10 @@
 package crawler
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -13,7 +16,7 @@ const (
 	getRecipeUrl = "https://www.pxmart.com.tw/Api/api/Recipes/GetHomeList"
 )
 
-type RecipeType struct {
+type recipe struct {
 	Keyword   string `json:"keyword"`
 	PageIndex int    `json:"pageIndex"`
 	PageSize  int    `json:"pageSize"`
@@ -22,30 +25,32 @@ type RecipeType struct {
 }
 
 func GetRecipes(c *gin.Context) {
+
 	time := time.Now().UnixMilli()
-	log.Println(time)
-	var ReqType RecipeType
-	// params := recipe{"", 1, 12, []int{}, 6}
-	c.DefaultQuery("t", string(time))
-	// data, _ := ioutil.ReadAll(c.Request.Body)
-	// fmt.Println(data)
-	if err := c.ShouldBindJSON(&ReqType); err != nil {
-		// c.AbortWithError(http.StatusBadRequest, err)
-		fmt.Println(err)
-		return
+	// log.Println(time)
+	params := recipe{"", 1, 12, []int{}, 6}
+	body, err := json.Marshal(params)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	url := getRecipeUrl + "?t=" + string(time)
+	// log.Println(url)
+	res, err := http.Post(url, "application/json", bytes.NewBuffer(body))
+
+	if err != nil {
+		log.Println(err.Error())
 	}
 
-	reqMap := map[string]interface{}{
-		"code": 0,
-		"rsp":  fmt.Sprintf("welcome %v", ReqType),
+	defer res.Body.Close()
+
+	body, err = ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Println(err.Error())
 	}
+	jsonStr := string(body)
+	fmt.Println("Response: ", jsonStr)
 
-	c.JSON(http.StatusOK, reqMap)
-}
-
-func errorResponse(c *gin.Context, code int, msg string) {
-	c.JSON(code, gin.H{
-		"code":    code,
-		"message": msg,
+	c.JSON(http.StatusOK, gin.H{
+		"data": jsonStr,
 	})
 }
