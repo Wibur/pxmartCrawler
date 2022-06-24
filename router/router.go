@@ -1,7 +1,7 @@
 package router
 
 import (
-	crawl "openCrawler/crawler"
+	"openCrawler/crawler"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,7 +10,7 @@ func Register() {
 	r := gin.Default()
 	// crawler
 	// r.POST("/getAssets", crawl.GetAssets)
-	r.POST("/getRecipes", crawl.GetRecipes)
+	r.POST("/getRecipes", crawler.GetRecipes)
 	// r.POST("/getAssets", func(c *gin.Context) {
 	// 	// log.Println(c.PostForm("url"))
 	// 	params := crawlerParams{c.DefaultPostForm("url", "")}
