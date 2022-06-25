@@ -3,10 +3,10 @@ package crawler
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	. "openCrawler/service"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,7 @@ const (
 	getRecipeUrl = "https://www.pxmart.com.tw/Api/api/Recipes/GetHomeList"
 )
 
-type recipe struct {
+type recipeParams struct {
 	Keyword   string `json:"keyword"`
 	PageIndex int    `json:"pageIndex"`
 	PageSize  int    `json:"pageSize"`
@@ -25,10 +25,9 @@ type recipe struct {
 }
 
 func GetRecipes(c *gin.Context) {
-
 	time := time.Now().UnixMilli()
 	// log.Println(time)
-	params := recipe{"", 1, 12, []int{}, 6}
+	params := recipeParams{"", 1, 12, []int{}, 6}
 	body, err := json.Marshal(params)
 	if err != nil {
 		log.Println(err.Error())
@@ -47,10 +46,18 @@ func GetRecipes(c *gin.Context) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-	jsonStr := string(body)
-	fmt.Println("Response: ", jsonStr)
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": jsonStr,
-	})
+	CreateRecipes(body)
+	// result, err := CreateRecipes(body)
+	// if err != nil {
+	// 	c.JSON(http.StatusOK, gin.H{
+	// 		"code":    http.StatusOK,
+	// 		"message": "success",
+	// 	})
+	// }
+
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"code":    http.StatusOK,
+	// 	"message": err.Error(),
+	// })
 }
