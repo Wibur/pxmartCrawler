@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	. "openCrawler/service"
+	"openCrawler/service"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -47,17 +47,5 @@ func GetRecipes(c *gin.Context) {
 		log.Println(err.Error())
 	}
 
-	CreateRecipes(body)
-	// result, err := CreateRecipes(body)
-	// if err != nil {
-	// 	c.JSON(http.StatusOK, gin.H{
-	// 		"code":    http.StatusOK,
-	// 		"message": "success",
-	// 	})
-	// }
-
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"code":    http.StatusOK,
-	// 	"message": err.Error(),
-	// })
+	service.CreateRecipes(body)
 }
