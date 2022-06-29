@@ -32,7 +32,7 @@ func CrawlRecipes(c *gin.Context) {
 		log.Println(err.Error())
 	}
 	url := getRecipeUrl + "?t=" + string(time)
-	// log.Println(url)
+
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
