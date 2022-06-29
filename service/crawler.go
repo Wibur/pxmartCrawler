@@ -25,7 +25,6 @@ type recipeParams struct {
 
 func CrawlRecipes(c *gin.Context) {
 	time := time.Now().UnixMilli()
-	// log.Println(time)
 	params := recipeParams{"", 1, 12, []int{}, 6}
 	body, err := json.Marshal(params)
 	if err != nil {
