@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"openCrawler/entity"
-	"reflect"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,19 +31,13 @@ func CreateRecipes(data []byte) (res int, err error) {
 	json.Unmarshal(data, &insert)
 	// code, data => list, totalCount
 	fmt.Println(insert["data"])
-	fmt.Println(reflect.TypeOf(insert["data"]))
 
 	if insert["code"] != 200 {
 		return 0, err
 	}
-	return 1, err
+	return 1, nil
 	// var insertData []Recipes
-	// if insert["data"]["totalCount"] != 0 {
-	// 	for v := range insert["data"] {
-
-	// 	}
-	// }
-	// // insert data to database
+	// insert data to database
 	// res, err = entity.CreateRecipes()
 	// return res, err
 }
