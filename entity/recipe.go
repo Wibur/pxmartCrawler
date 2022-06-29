@@ -59,6 +59,10 @@ func FindByRecipeId(id string) Recipes {
 	return recipe
 }
 
-func CreateRecipes(recipes []Recipes) {
-	databases.DBConnect.Create(&recipes)
+func CreateRecipes(recipes []Recipes) bool {
+	tx := databases.DBConnect.Create(&recipes)
+	if tx.Error != nil {
+		return false
+	}
+	return true
 }

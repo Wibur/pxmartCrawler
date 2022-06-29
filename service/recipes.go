@@ -24,14 +24,13 @@ func FindByRecipeId(c *gin.Context) {
 	c.JSON(http.StatusOK, recipe)
 }
 
-func CreateRecipes(data []byte) (res bool, msg string) {
+func CreateRecipes(data []byte) bool {
 	var insert entity.ResponseBody
 	json.Unmarshal(data, &insert)
 
 	if insert.Code != http.StatusOK {
-		return false, insert.Message
+		return false
 	}
 
-	entity.CreateRecipes(insert.Data.List)
-	return true, "create success"
+	return entity.CreateRecipes(insert.Data.List)
 }
