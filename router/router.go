@@ -1,7 +1,6 @@
 package router
 
 import (
-	"openCrawler/crawler"
 	"openCrawler/service"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +9,7 @@ import (
 func Register() {
 	r := gin.Default()
 
-	r.POST("/createRecipes", crawler.GetRecipes)
+	r.POST("/crawlRecipes", service.CrawlRecipes)
 	r.GET("/getRecipe/:id", service.FindByRecipeId)
 	r.GET("/getAllRecipe", service.FindAllRecipe)
 

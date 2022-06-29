@@ -40,11 +40,11 @@ type ResponseData struct {
 }
 
 type Recipes struct {
-	PxId        string  `json:"Id"`
-	CookingTime float64 `json:"CookingTime"`
-	Image       string  `json:"Image"`
-	Ingredient  int     `json:"IngredientNum"`
-	Name        string  `json:"Name"`
+	PxId        string  `json:"id"`
+	CookingTime float64 `json:"cookingTime"`
+	Image       string  `json:"image"`
+	Ingredient  int     `json:"ingredientNum"`
+	Name        string  `json:"name"`
 }
 
 func FindAllRecipe() []Recipes {

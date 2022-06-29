@@ -1,4 +1,4 @@
-package crawler
+package service
 
 import (
 	"bytes"
@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"openCrawler/service"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -24,7 +23,7 @@ type recipeParams struct {
 	Type      int    `json:"type"`
 }
 
-func GetRecipes(c *gin.Context) {
+func CrawlRecipes(c *gin.Context) {
 	time := time.Now().UnixMilli()
 	// log.Println(time)
 	params := recipeParams{"", 1, 12, []int{}, 6}
@@ -47,5 +46,9 @@ func GetRecipes(c *gin.Context) {
 		log.Println(err.Error())
 	}
 
-	service.CreateRecipes(body)
+	result, msg := CreateRecipes(body)
+	if result == false {
+		c.JSON(http.StatusBadRequest, msg)
+	}
+	c.JSON(http.StatusOK, msg)
 }
