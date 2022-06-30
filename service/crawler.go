@@ -1,9 +1,8 @@
-package crawler
+package service
 
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,7 +15,7 @@ const (
 	getRecipeUrl = "https://www.pxmart.com.tw/Api/api/Recipes/GetHomeList"
 )
 
-type recipe struct {
+type recipeParams struct {
 	Keyword   string `json:"keyword"`
 	PageIndex int    `json:"pageIndex"`
 	PageSize  int    `json:"pageSize"`
@@ -24,17 +23,15 @@ type recipe struct {
 	Type      int    `json:"type"`
 }
 
-func GetRecipes(c *gin.Context) {
-
+func CrawlRecipes(c *gin.Context) {
 	time := time.Now().UnixMilli()
-	// log.Println(time)
-	params := recipe{"", 1, 12, []int{}, 6}
+	params := recipeParams{"", 1, 12, []int{}, 6}
 	body, err := json.Marshal(params)
 	if err != nil {
 		log.Println(err.Error())
 	}
 	url := getRecipeUrl + "?t=" + string(time)
-	// log.Println(url)
+
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
@@ -47,10 +44,10 @@ func GetRecipes(c *gin.Context) {
 	if err != nil {
 		log.Println(err.Error())
 	}
-	jsonStr := string(body)
-	fmt.Println("Response: ", jsonStr)
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": jsonStr,
-	})
+	result, msg := CreateRecipes(body)
+	if result == false {
+		c.JSON(http.StatusBadRequest, msg)
+	}
+	c.JSON(http.StatusOK, msg)
 }

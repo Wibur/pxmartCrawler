@@ -1,23 +1,17 @@
 package router
 
 import (
-	"openCrawler/crawler"
+	"openCrawler/service"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Register() {
 	r := gin.Default()
-	// crawler
-	// r.POST("/getAssets", crawl.GetAssets)
-	r.POST("/getRecipes", crawler.GetRecipes)
-	// r.POST("/getAssets", func(c *gin.Context) {
-	// 	// log.Println(c.PostForm("url"))
-	// 	params := crawlerParams{c.DefaultPostForm("url", "")}
-	// 	// log.Println(reflect.TypeOf(params))
-	// 	log.Println(params)
-	// 	// go to crawl
-	// 	crawl.Fetch(params.url)
-	// })
+
+	r.POST("/crawlRecipes", service.CrawlRecipes)
+	r.GET("/getRecipe/:id", service.FindByRecipeId)
+	r.GET("/getAllRecipe", service.FindAllRecipe)
+
 	r.Run(":9527") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
