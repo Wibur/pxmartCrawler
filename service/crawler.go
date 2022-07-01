@@ -45,9 +45,12 @@ func CrawlRecipes(c *gin.Context) {
 		log.Println(err.Error())
 	}
 
-	result, msg := CreateRecipes(body)
-	if result == false {
-		c.JSON(http.StatusBadRequest, msg)
+	if err = CreateRecipes(body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
 	}
-	c.JSON(http.StatusOK, msg)
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Created Success!",
+	})
 }

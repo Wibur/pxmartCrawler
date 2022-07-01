@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"openCrawler/entity"
 
@@ -24,13 +25,19 @@ func FindByRecipeId(c *gin.Context) {
 	c.JSON(http.StatusOK, recipe)
 }
 
-func CreateRecipes(data []byte) bool {
+func CreateRecipes(data []byte) error {
 	var insert entity.ResponseBody
-	json.Unmarshal(data, &insert)
-
-	if insert.Code != http.StatusOK {
-		return false
+	if err := json.Unmarshal(data, &insert); err != nil {
+		return err
 	}
 
-	return entity.CreateRecipes(insert.Data.List)
+	if insert.Code != http.StatusOK {
+		return errors.New("Third Party Error")
+	}
+
+	if err := entity.CreateRecipes(insert.Data.List); err != nil {
+		return err
+	}
+
+	return nil
 }
