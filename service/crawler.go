@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 
@@ -28,26 +27,36 @@ func CrawlRecipes(c *gin.Context) {
 	params := recipeParams{"", 1, 12, []int{}, 6}
 	body, err := json.Marshal(params)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
 	}
 	url := getRecipeUrl + "?t=" + string(time)
 
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
 	}
 
 	defer res.Body.Close()
 
 	body, err = ioutil.ReadAll(res.Body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
 	}
 
 	result, msg := CreateRecipes(body)
 	if result == false {
-		c.JSON(http.StatusBadRequest, msg)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": msg,
+		})
 	}
-	c.JSON(http.StatusOK, msg)
+	c.JSON(http.StatusOK, gin.H{
+		"message": msg,
+	})
 }

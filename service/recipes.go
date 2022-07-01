@@ -17,8 +17,9 @@ func FindByRecipeId(c *gin.Context) {
 	recipe := entity.FindByRecipeId(c.Param("id"))
 
 	if recipe.PxId == "" {
-		c.JSON(http.StatusNotFound, "Error: Recipe not found")
-		return
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Error: Recipe not found",
+		})
 	}
 
 	c.JSON(http.StatusOK, recipe)

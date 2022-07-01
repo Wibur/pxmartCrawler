@@ -29,20 +29,26 @@ func GetRecipes(c *gin.Context) {
 	params := recipe{"", 1, 12, []int{}, 6}
 	body, err := json.Marshal(params)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
 	}
 	url := getRecipeUrl + "?t=" + strconv.FormatInt(time, 10)
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
 	}
 
 	defer res.Body.Close()
 
 	body, err = ioutil.ReadAll(res.Body)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
 	}
 	jsonStr := string(body)
 
