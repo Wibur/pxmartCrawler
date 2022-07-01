@@ -26,7 +26,11 @@ func FindByRecipeId(c *gin.Context) {
 
 func CreateRecipes(data []byte) bool {
 	var insert entity.ResponseBody
-	json.Unmarshal(data, &insert)
+	err := json.Unmarshal(data, &insert)
+
+	if err != nil {
+		return false
+	}
 
 	if insert.Code != http.StatusOK {
 		return false
