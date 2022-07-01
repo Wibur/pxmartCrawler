@@ -3,9 +3,7 @@ package crawler
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -28,28 +26,25 @@ type recipe struct {
 func GetRecipes(c *gin.Context) {
 
 	time := time.Now().UnixMilli()
-	// log.Println(time)
 	params := recipe{"", 1, 12, []int{}, 6}
 	body, err := json.Marshal(params)
 	if err != nil {
-		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, err.Error())
 	}
 	url := getRecipeUrl + "?t=" + strconv.FormatInt(time, 10)
-	// log.Println(url)
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
-		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	defer res.Body.Close()
 
 	body, err = ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, err.Error())
 	}
 	jsonStr := string(body)
-	fmt.Println("Response: ", jsonStr)
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": jsonStr,

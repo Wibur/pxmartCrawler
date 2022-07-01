@@ -28,21 +28,21 @@ func CrawlRecipes(c *gin.Context) {
 	params := recipeParams{"", 1, 12, []int{}, 6}
 	body, err := json.Marshal(params)
 	if err != nil {
-		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, err.Error())
 	}
 	url := getRecipeUrl + "?t=" + string(time)
 
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
-		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	defer res.Body.Close()
 
 	body, err = ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	result, msg := CreateRecipes(body)
