@@ -16,16 +16,17 @@ const (
 )
 
 type recipeParams struct {
-	Keyword   string `json:"keyword"`
-	PageIndex int    `json:"pageIndex"`
-	PageSize  int    `json:"pageSize"`
+	Keyword   string `json:"keyword" default:""`
+	PageIndex int    `json:"pageIndex" default:"1"`
+	PageSize  int    `json:"pageSize" default:"10"`
 	Category  []int  `json:"category"`
-	Type      int    `json:"type"`
+	Type      int    `json:"type" default:"6"`
 }
 
 func CrawlRecipes(c *gin.Context) {
 	time := time.Now().UnixMilli()
-	params := recipeParams{"", 1, 12, []int{}, 6}
+	var params recipeParams
+	c.ShouldBind(&params)
 	body, err := json.Marshal(params)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
