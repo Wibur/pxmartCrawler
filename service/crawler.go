@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -28,28 +28,39 @@ func CrawlRecipes(c *gin.Context) {
 	params := recipeParams{"", 1, 12, []int{}, 6}
 	body, err := json.Marshal(params)
 	if err != nil {
-		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
 	}
-	url := getRecipeUrl + "?t=" + string(time)
+	url := getRecipeUrl + "?t=" + strconv.FormatInt(time, 10)
 
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
-		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
 	}
 
 	defer res.Body.Close()
 
 	body, err = ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
 	}
 
 	if err = CreateRecipes(body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Created Success!",
 	})

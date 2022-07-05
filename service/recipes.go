@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"openCrawler/entity"
 
@@ -11,18 +12,28 @@ import (
 
 func FindAllRecipe(c *gin.Context) {
 	recipes := entity.FindAllRecipe()
-	c.JSON(http.StatusOK, recipes)
+	c.JSON(http.StatusOK, gin.H{
+		"data":    recipes,
+		"message": "Success",
+	})
 }
 
 func FindByRecipeId(c *gin.Context) {
 	recipe := entity.FindByRecipeId(c.Param("id"))
-
+	err := errors.New("Recipe not found")
 	if recipe.PxId == "" {
-		c.JSON(http.StatusNotFound, "Error: Recipe not found")
+		err = fmt.Errorf("Service FindByRecipeId => %w", err)
+		c.JSON(http.StatusNotFound, gin.H{
+			"data":    nil,
+			"message": err.Error(),
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, recipe)
+	c.JSON(http.StatusOK, gin.H{
+		"data":    recipe,
+		"message": "Success",
+	})
 }
 
 func CreateRecipes(data []byte) error {
