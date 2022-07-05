@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -16,17 +17,18 @@ const (
 )
 
 type recipeParams struct {
-	Keyword   string `json:"keyword" default:""`
-	PageIndex int    `json:"pageIndex" default:"1"`
-	PageSize  int    `json:"pageSize" default:"10"`
+	Keyword   string `json:"keyword"`
+	PageIndex int    `json:"pageIndex"`
+	PageSize  int    `json:"pageSize"`
 	Category  []int  `json:"category"`
-	Type      int    `json:"type" default:"6"`
+	Type      int    `json:"type"`
 }
 
 func CrawlRecipes(c *gin.Context) {
 	time := time.Now().UnixMilli()
-	var params recipeParams
+	params := recipeParams{"", 1, 10, []int{}, 6}
 	c.ShouldBind(&params)
+	fmt.Println(params)
 	body, err := json.Marshal(params)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
